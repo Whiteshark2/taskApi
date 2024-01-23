@@ -1,7 +1,13 @@
 const express=require('express')
 const app=express()
 const db=require('./config/mongoose')
+const passport=require('passport')
+const passportJWT=require('./config/passport-jwt-strategy')
 
+
+
+
+app.use(express.urlencoded())
 app.use('/api',require('./routes'))
 
 
