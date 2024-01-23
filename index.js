@@ -2,7 +2,7 @@ const express=require('express')
 const app=express()
 const db=require('./config/mongoose')
 
-
+app.use('/api',require('./routes'))
 
 
 const port=8000
