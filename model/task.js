@@ -18,7 +18,7 @@ const taskSchema=new mongoose.Schema({
         type:String,
         default:'Todo'
     },
-    user_id: { 
+    user: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 
     }

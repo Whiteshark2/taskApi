@@ -8,18 +8,20 @@ let opts={
     secretOrKey:'taskApp123',
 }
 
-passport.use(new JWTStrategy(opts, function(jwt_payload, done) {
-    User.findById(jwt_payload._id,function(err,user){
-        if(err){
-            console.log("Error in finding user from JWT")
-            return;
-        }
+passport.use(new JWTStrategy(opts, async function(jwt_payload, done) {
+    
+    try {
+        const user=await User.findById(jwt_payload._id)
         if(user){
             return done(null,user)
-        }else{
+            }else{
             return done(null,false)
         }
-    })
+        
+    } catch (error) {
+        console.log("Error in finding user")
+        return;
+    }
 }));
 
 module.exports=passport
