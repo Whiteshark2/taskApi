@@ -33,7 +33,7 @@ module.exports.createSession=async function(req,res){
         return res.json(200,{
             message:"Sign in successful,here is your token",
             data:{
-                token: jwt.sign(user.toJSON(),'taskApp123',{expiresIn:'1000000'})
+                token: jwt.sign(user.toJSON(),'taskApp123',{expiresIn:'7d'})
             }
         })
     } catch (error) {

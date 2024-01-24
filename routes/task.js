@@ -8,7 +8,7 @@ router.post('/createTask',passport.authenticate('jwt',{session:false}),taskContr
 router.get('/getAllTask',taskController.getAllTask)
 router.get('/getAllTask/:status',taskController.getAllTaskByStatus)
 
-router.put('/update/:id',passport.authenticate('jwt',{session:false}),taskController.updateTask)
+router.patch('/update/:id',passport.authenticate('jwt',{session:false}),taskController.updateTask)
 
 
 module.exports=router
