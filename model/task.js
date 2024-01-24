@@ -13,6 +13,7 @@ const taskSchema=new mongoose.Schema({
     due_date:{
         type:Date,
         required:true,
+        set: (value) => new Date(value.setHours(0, 0, 0, 0)),
     },
     status:{
         type:String,
@@ -21,7 +22,11 @@ const taskSchema=new mongoose.Schema({
     user: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 
-    }
+    },
+    subtasks:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Subtask'
+    }]
 },{
     timestamps:true
 })

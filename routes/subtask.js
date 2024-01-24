@@ -8,5 +8,6 @@ router.post('/create',passport.authenticate('jwt',{session:false}),subTaskContro
 router.get('/getSubTask/:id',subTaskController.getAllSubTaskByTaskID)
 
 router.patch('/update/:id',subTaskController.update)
+router.delete('/delete/:id',subTaskController.delete)
 
 module.exports=router

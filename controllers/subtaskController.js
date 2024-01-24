@@ -1,20 +1,26 @@
 const Task=require('../model/task')
 const SubTask=require('../model/subtask')
+const User=require('../model/task')
+const Subtask = require('../model/subtask')
 
 
 
 module.exports.create=async function(req,res){
+ 
     try {
-        const task=await Task.findById(req.body.task_id)
+        const task=await Task.findById(req.body.task)
         if(!task){
             return res.status(404).json({
                 message:"No Task Found",
             })
         }
         const subtask=await SubTask.create({
-            task_id:req.body.task_id,
-            status:req.body.status
+            task:req.body.task,
+            status:req.body.status,
+            user:req.user._id
         })
+        task.subtasks.push(subtask)
+        await task.save()
         return res.status(200).json({
             message:"Subtask created successfully",
             subtask
@@ -63,6 +69,29 @@ module.exports.update=async function(req,res){
             updateSubtask
         })
     } catch (error) {
+        return res.status(500).json({
+            message:"Internal server error"
+    })
+    }
+}
+module.exports.delete=async function(req,res){
+    try {
+        const subtask=await Subtask.findById(req.params.id)
+        console.log(subtask.user)
+        if(subtask ){
+           let taskId=subtask.task
+           await SubTask.findByIdAndDelete(req.params.id)
+           let task=await Task.findByIdAndUpdate(taskId,{$pull:{subtasks:req.params.id}})
+            return res.status(200).json({
+                message:`Deleted subtask by id - ${req.params.id}`,task
+            })
+        }
         
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message:"Internal server error"
+    })
     }
 }

@@ -1,16 +1,16 @@
 const { model } = require('mongoose')
 const Task=require('../model/task')
 const User=require('../model/user')
+const Subtask = require('../model/subtask')
 
 module.exports.createTask=async function(req,res){
-    console.log(req.user.id)
     try {
-        const task=await Task.findOne({title:req.body.task})
-        if(!task){
+        const task=await Task.findOne({title:req.body.title})
+        if(!task||task===null){
             const newTask=await Task.create({
                 title:req.body.title,
                 description:req.body.description,
-                due_date:req.body.due_date,
+                due_date:new Date(req.body.due_date),
                 status:req.body.status,
                 user:req.user._id
             })
@@ -23,8 +23,10 @@ module.exports.createTask=async function(req,res){
             message:"task with same title Already exist change the title name",
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
-            message:"Internal server error"
+            message:"Internal server error",
+           
         })
     }
 }
@@ -92,6 +94,36 @@ module.exports.updateTask=async function(req,res){
 }
 }
 
+module.exports.filterTaskDueDate=async function(req,res){
+    try {
+        const task=await Task.find({due_date:req.params.due_date})
+        return res.status(200).json({
+            message: 'Here is task ',
+            task,
+        });
 
+    } catch (error) {
+        return res.status(500).json({
+         message:"Internal server error"
+    })
+    }
+}
 
+module.exports.delete=async function(req,res){
+    try {
+        const task=await Task.findById(req.params.id)
+        if(task.user==req.user.id){
+            await task.deleteOne();
+            const subtask=await Subtask.deleteMany({task:task})
+            return res.status(200).json({
+                message:"Task successfully deleted and its associated subtask",
+                
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message:"Internal server error"
+       })
+    }
+}
 
