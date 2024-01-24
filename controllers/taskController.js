@@ -31,7 +31,11 @@ module.exports.createTask=async function(req,res){
 
 module.exports.getAllTask=async function(req,res){
     try {
+        let page=Number(req.query.page)||1
+        let limit=Number(req.query.limit)||5
+        let skip=(page-1)*limit
         const task=await Task.find()
+        .skip(skip).limit(limit)
         return res.status(200).json({
             task
         })
@@ -44,7 +48,10 @@ module.exports.getAllTask=async function(req,res){
 
 module.exports.getAllTaskByStatus=async function(req,res){
     try {
-        const task=await Task.find({status:req.params.status})
+        let page=Number(req.query.page)||1
+        let limit=Number(req.query.limit)||3
+        let skip=(page-1)*limit
+        const task=await Task.find({status:req.params.status}).skip(skip).limit(limit)
         return res.status(200).json({
             task
         })
