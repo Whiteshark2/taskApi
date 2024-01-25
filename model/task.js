@@ -17,7 +17,7 @@ const taskSchema=new mongoose.Schema({
     },
     status:{
         type:String,
-        default:'todo',
+        required:true
     },
     priority:{
         type:Number,

@@ -17,7 +17,7 @@ module.exports.create=async function(req,res){
         }
         const subtask=await SubTask.create({
             task:req.body.task,
-            status:req.body.status,
+            status:(req.body.status),
             user:req.user._id
         })
         task.subtasks.push(subtask)
@@ -66,13 +66,14 @@ module.exports.update=async function(req,res){
         }
         const updateSubtask=await SubTask.findByIdAndUpdate(req.params.id,{status:req.body.status},{new:true})
         const relatedSubtasks = await Subtask.find({ task: filter.task });
+        const anyCompleted= relatedSubtasks.some(sub=> sub.status===1)
+        console.log(anyCompleted)
         const allCompleted=await relatedSubtasks.every(sub=>sub.status===1)
         if(allCompleted){
-            await Task.findByIdAndUpdate(filter.task,{status:'completed'},{new:true})
-        }else{
-            await Task.findByIdAndUpdate(filter.task,{status:'inprogress' },{new:true})
+            await Task.findByIdAndUpdate(filter.task,{status:'done'},{new:true})
+        }else if(anyCompleted){
+            await Task.findByIdAndUpdate(filter.task,{status:'inprogress'},{new:true})
         }
-
         return res.status(200).json({
             message:"here is update subtask",
             updateSubtask

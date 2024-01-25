@@ -107,7 +107,7 @@ module.exports.filterTaskDueDate=async function(req,res){
     try {
         
         const task=await Task.find({ due_date: { $lt: new Date(req.params.date) } })
-        // return task which due date targeted date
+        // return task which due date less than targeted date
         return res.status(200).json({
             message: 'Here is task ',
             task,
