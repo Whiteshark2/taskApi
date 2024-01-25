@@ -12,7 +12,7 @@ module.exports.create=async function(req,res){
         })
     }else{
         return res.json(422,{
-            message:"User already exist! try another phone number"
+            message:"User already exist! try another phone number/Invalid phone number length"
         })
     }
    } catch (error) {

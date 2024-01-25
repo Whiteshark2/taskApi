@@ -59,7 +59,7 @@ module.exports.getAllSubTaskByTaskID=async function(req,res){
 module.exports.update=async function(req,res){
     try {
         const filter=await SubTask.findById(req.params.id)
-        if(!filter){
+        if(!filter||req.user.id!=filter.user){
             return res.status(404).json({
                 message:"No subtask found"
             })
@@ -89,7 +89,7 @@ module.exports.delete=async function(req,res){
     try {
         const subtask=await Subtask.findById(req.params.id)
         console.log(subtask.user)
-        if(subtask){
+        if(subtask|| subtask.user==req.user.id){
            let taskId=subtask.task
            await SubTask.findByIdAndDelete(req.params.id)
            let task=await Task.findByIdAndUpdate(taskId,{$pull:{subtasks:req.params.id}})

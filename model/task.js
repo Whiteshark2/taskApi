@@ -5,10 +5,13 @@ const taskSchema=new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
+        lowercase:true,
+        trim:true,
+        minLength:[3,"minlength should be 3"]
     },
     description:{
         type:String,
-        required:true,
+        required:[true,"why no description?"]
     },
     due_date:{
         type:Date,
@@ -17,7 +20,8 @@ const taskSchema=new mongoose.Schema({
     },
     status:{
         type:String,
-        required:true
+        required:true,
+        enum:['todo','inprogress','done']
     },
     priority:{
         type:Number,
