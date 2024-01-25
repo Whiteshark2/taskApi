@@ -10,9 +10,11 @@ router.get('/getAllTask/:status',taskController.getAllTaskByStatus)
 
 router.patch('/update/:id',passport.authenticate('jwt',{session:false}),taskController.updateTask)
 
-router.get('/getAllTask/:due_date',taskController.filterTaskDueDate)
+router.get('/getAllTask/:date',taskController.filterTaskDueDate)
 
 router.delete('/delete/:id',passport.authenticate('jwt',{session:false}),taskController.delete)
+
+router.get('/getonPriority',taskController.getAllTaskPriority)
 
 
 module.exports=router

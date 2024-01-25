@@ -2,6 +2,7 @@ const Task=require('../model/task')
 const SubTask=require('../model/subtask')
 const User=require('../model/task')
 const Subtask = require('../model/subtask')
+const { all } = require('../routes')
 
 
 
@@ -64,11 +65,20 @@ module.exports.update=async function(req,res){
             })
         }
         const updateSubtask=await SubTask.findByIdAndUpdate(req.params.id,{status:req.body.status},{new:true})
+        const relatedSubtasks = await Subtask.find({ task: filter.task });
+        const allCompleted=await relatedSubtasks.every(sub=>sub.status===1)
+        if(allCompleted){
+            await Task.findByIdAndUpdate(filter.task,{status:'completed'},{new:true})
+        }else{
+            await Task.findByIdAndUpdate(filter.task,{status:'inprogress' },{new:true})
+        }
+
         return res.status(200).json({
             message:"here is update subtask",
             updateSubtask
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message:"Internal server error"
     })
@@ -78,7 +88,7 @@ module.exports.delete=async function(req,res){
     try {
         const subtask=await Subtask.findById(req.params.id)
         console.log(subtask.user)
-        if(subtask ){
+        if(subtask){
            let taskId=subtask.task
            await SubTask.findByIdAndDelete(req.params.id)
            let task=await Task.findByIdAndUpdate(taskId,{$pull:{subtasks:req.params.id}})

@@ -9,7 +9,7 @@ const authToken = process.env.authToken;
 const twilioClient = new Twilio(accountSid, authToken);
 // updating task priority based on due date in DB
 // runs per minute
-cron.schedule('* * * * *', async () => {
+cron.schedule('*/20 * * * *', async () => {
     try {
         const today = moment().startOf('day');
         const tomorrow = moment(today).add(1, 'day');
@@ -33,7 +33,7 @@ cron.schedule('* * * * *', async () => {
 
 //calling user based on priority User
 // runs on per 5minute
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/60 * * * *', async () => {
     try {
         const users = await User.find().sort({ priority: 1});
 

@@ -11,8 +11,9 @@ module.exports.createTask=async function(req,res){
                 title:req.body.title,
                 description:req.body.description,
                 due_date:new Date(req.body.due_date),
-                status:req.body.status,
-                user:req.user._id
+                status:(req.body.status),
+                user:req.user._id,
+                priority:Number(req.body.priority)
             })
             return res.status(200).json({
                 message:"Task created successfully",
@@ -63,14 +64,21 @@ module.exports.getAllTaskByStatus=async function(req,res){
     })
 }}
 
-// module.exports.getAllTaskPriority=async function(req,res){
-//     try {
-//         const user=await User.find({priority:req.params.priority})
-//         const task=await Task
-//     } catch (error) {
-        
-//     }
-// }
+module.exports.getAllTaskPriority=async function(req,res){
+    try {
+        let priority=Number(req.query.priority)
+        const task=await Task.find({priority:priority})
+        return res.status(200).json({
+            message:"Here are task based on  priority",
+            task
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message:"Internal server error"
+        })
+    }
+}
 
 
 module.exports.updateTask=async function(req,res){
@@ -95,8 +103,11 @@ module.exports.updateTask=async function(req,res){
 }
 
 module.exports.filterTaskDueDate=async function(req,res){
+    console.log(req.params.date)
     try {
-        const task=await Task.find({due_date:req.params.due_date})
+        
+        const task=await Task.find({ due_date: { $lt: new Date(req.params.date) } })
+        // return task which due date targeted date
         return res.status(200).json({
             message: 'Here is task ',
             task,

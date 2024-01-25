@@ -22,7 +22,7 @@ const taskSchema=new mongoose.Schema({
     priority:{
         type:Number,
         required:true,
-        default:0
+        enum:[0,1,2,3]
     },
     user: { 
         type: mongoose.Schema.Types.ObjectId, 
