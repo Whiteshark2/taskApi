@@ -1,11 +1,18 @@
 const User=require('../model/user')
 const jwt=require('jsonwebtoken')
+const bcrypt=require('bcryptjs')
 
 module.exports.create=async function(req,res){
    try {
     const user=await User.findOne({phone:req.body.phone})
+    
     if(!user){
-        const user=await User.create(req.body)
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const user=await User.create({
+            phone:req.body.phone,
+            password:hashedPassword,
+            priority:req.body.priority
+        })
         return res.json(200,{
             message:"User added to database",
             user:user
@@ -25,7 +32,7 @@ module.exports.create=async function(req,res){
 module.exports.createSession=async function(req,res){
     try {
         const user=await User.findOne({phone:req.body.phone})
-        if(!user||user.password!=req.body.password){
+        if(!user|| !(await bcrypt.compare(req.body.password, user.password))){
             return res.json(422,{
                 message:"Invalid phone number/Passoword"
             })

@@ -7,7 +7,6 @@ const passportJWT=require('./config/passport-jwt-strategy')
 const cron=require('./config/twilio')
 
 
-
 app.use(express.urlencoded())
 app.use('/api',require('./routes'))
 

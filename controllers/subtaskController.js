@@ -97,6 +97,9 @@ module.exports.delete=async function(req,res){
                 message:`Deleted subtask by id - ${req.params.id}`,task
             })
         }
+        return res.status(401).json({
+            message:"Not authorised to delete"
+        })
         
         
     } catch (error) {

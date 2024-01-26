@@ -4,11 +4,16 @@ const userSchema= new mongoose.Schema({
     phone:{
         type:String,
         unique:[true,"Phone Already in use"],
-        required:true,
-        minLength:10,
-        maxLength:[10,"Phone number length should be 10"]
-        
-    },
+        validate: {
+            validator: function (value) {
+                // match phone number along with country code
+              const phoneNumberRegex = /^\+\d{1,4}-?\d{10}$/;
+              return phoneNumberRegex.test(value);
+            },
+            message: 'Please enter a valid phone number with country code.',
+          },
+          required: [true, 'Phone number is required.'],
+        },
     password:{
         type:String,
         required:true,
